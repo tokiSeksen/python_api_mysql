@@ -53,7 +53,7 @@ def get_user_from_database(data, mysql):
 def get_user_dict(user_from_database):
     user_instance = User(*user_from_database)
     result_dict = user_instance.__dict__
-    logging.info(f"user dict {result_dict}")
+
     return result_dict
 
 

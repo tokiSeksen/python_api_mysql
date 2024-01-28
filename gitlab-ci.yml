@@ -1,0 +1,131 @@
+# for demonstration purposes
+
+image: python:3.7.0
+
+stages:
+  - build
+  - test
+  - plan
+  - deploy:dev
+  - deploy:test
+  - deploy:prod
+
+
+#####  BUILD  #####
+
+build:
+  stage: build
+  script:
+    - #scripts
+  artifacts:
+    paths:
+      - #path
+  only:
+    refs:
+      - develop
+      - feature/api_updates
+      - master
+
+#####  TEST  #####
+
+test:
+  stage: test
+  script:
+    - # scripts
+  artifacts:
+    paths:
+      - coverage.xml
+  allow_failure: true
+  only:
+    refs:
+      - develop
+      - feature/api_updates
+
+
+
+#####  PLAN #####
+.plan: &plan
+  image:
+    name: # TERRAFORM IMAGE NAME
+  script:
+    - cd terraform
+    - terraform init
+    - terraform workspace select $ENVIRONMENT || terraform workspace new $ENVIRONMENT
+    - terraform plan --var-file=${$ENVIRONMENT}.tfvars -var zip_version=${CI_COMMIT_SHORT_SHA}
+
+
+#####  DEPLOY #####
+.deploy: &deploy
+  image:
+    name: # TERRAFORM IMAGE NAME
+  script:
+    - *plan
+    - terraform apply --var-file=${$ENVIRONMENT}.tfvars -var zip_version=${CI_COMMIT_SHORT_SHA} --auto-approve
+
+
+# DEV #
+
+plan:dev:
+  <<: *plan
+  stage: plan:dev
+  environment:
+    name: dev
+  only:
+    - develop
+    - feature/api_updates
+  when: manual
+
+
+deploy:dev:
+  <<: *deploy
+  stage: deploy:dev
+  environment:
+    name: dev
+  only:
+    - develop
+    - feature/api_updates
+
+# TEST #
+
+plan:test:
+  <<: *plan
+  stage: plan:test
+  environment:
+    name: test
+  only:
+    - develop
+    - feature/api_updates
+  when: manual
+
+
+deploy:test:
+  <<: *deploy
+  stage: deploy:test
+  environment:
+    name: test
+  only:
+    - develop
+    - feature/api_updates
+
+
+# PROD #
+
+plan:prod:
+  <<: *plan
+  stage: plan:prod
+  environment:
+    name: prod
+  only:
+    - develop
+    - feature/api_updates
+  when: manual
+
+
+deploy:prod:
+  <<: *deploy
+  stage: deploy:prod
+  environment:
+    name: prod
+  only:
+    - develop
+    - feature/api_updates

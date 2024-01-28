@@ -1,4 +1,4 @@
-from database_operations import fetch_one, get_cursor, insert_data, fetch_all
+from database_operations import fetch_one, insert_data, fetch_all
 from errors import get_message
 import logging
 from flask import jsonify
@@ -15,7 +15,6 @@ class Link:
 
 def get_links_from_database(mysql, current_username):
     query = f"SELECT * FROM links WHERE username = '{current_username}'"
-
     links_from_db = fetch_all(mysql, query)
 
     return links_from_db
@@ -37,7 +36,7 @@ def create_link_for_api(mysql, data, current_username):
     except Exception as e:
         return get_message(f'Error querying database {e}', 500)
 
-    return get_message({'message':'Link created successfully'}, 201)
+    return get_message({'message': 'Link created successfully'}, 201)
 
 
 def get_links_for_api(mysql, current_username):
@@ -56,7 +55,6 @@ def get_links_for_api(mysql, current_username):
 
 def get_link_for_api(mysql, current_username, link_id):
     link_from_db = get_link_from_database(mysql, link_id)
-    logging.info(f"this is links from db {link_from_db}")
 
     if link_from_db:
         result_dict = get_dict_for_link_instance(link_from_db)
@@ -75,7 +73,6 @@ def update_link_for_api(mysql, current_username, data, link_id):
     title = data.get('title', None)
 
     link_from_db = get_link_from_database(mysql, link_id)
-    logging.info(f"this is links from db {link_from_db}")
 
     if link_from_db:
         result_dict = get_dict_for_link_instance(link_from_db)
@@ -104,7 +101,7 @@ def delete_link_for_api(mysql, current_username, link_id):
 def get_dict_for_link_instance(link_from_db):
     link_instance = Link(*link_from_db)
     result_dict = link_instance.__dict__
-    logging.info(f"this is dict from class {result_dict}")
+
     return result_dict
 
 
