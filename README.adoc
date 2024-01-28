@@ -1,0 +1,58 @@
+== Python api app managing branded links.
+
+**Requirements**
+
+For building and running:
+
+* Docker latest version
+* Python >= 3.7
+
+**Building package**
+
+Clean build:
+
+The build command builds or rebuild images in the ```docker-compose.yml``` file
+    ```
+    docker-compose build
+    ```
+
+
+The command that aggregates the output of each container
+    ```
+    docker-compose up
+    ```
+
+
+**Application Local Run**
+
+As the script is running as the main program inside the service lambda_sns_function it's possible to ensure the adding of resourses in the mysql table.
+
+. Retrieve the container with ```docker-compose ps``` command (lists containers for a Compose project, with current status and exposed ports.)
+. Call api using postman collection or curl on your terminal:
+    ```
+    curl --location 'http://0.0.0.0:5000/users' \
+    --header 'Content-Type: application/json' \
+    --data '{
+        "username": "test_user",
+        "password":"password",
+        "subscription_type": "free"
+    }'
+    ```
+
+. Connect to the mysql database with ```docker exec -it <container_name> mysql -u root -p```
+. Insert the password
+. Use the database with ```use db;```
+. Show available table ```show tables;```
+. Select a row from the table ```select * from links;``` to make sure that the data is saved correctly
+
+
+Stops containers and removes containers, networks, volumes, and images created by up
+    ```
+    docker-compose down
+    ```
+
+
+**Info**
+
+Developers:
+* Togzhan Seksen
