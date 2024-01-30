@@ -31,11 +31,12 @@ build:
 test:
   stage: test
   script:
-    - # scripts
+    - pip install requirements.txt
+    - python -m unittest discover test
   artifacts:
     paths:
       - coverage.xml
-  allow_failure: true
+  allow_failure: false
   only:
     refs:
       - develop

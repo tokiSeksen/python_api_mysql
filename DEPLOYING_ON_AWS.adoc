@@ -1,0 +1,64 @@
+**2. AWS Architecture and Services:**
+
+The architecture of this project consists of creating services based on Lambda functions. The lambda autoscaling
+allows us to dynamically adapt to the amount of incoming requests. APIs are exposed through API Gateway, providing
+a centralized entry point to the API. Through API Gateway it is also possible to manage authentication and authorization processes.
+For the database part, we can use the RDS service, providing scaling options to fit the application needs.
+Considering the high traffic, the CloudFront CDN service can be employed to optimize performance and improve content distribution.
+In particular, we can use it to cache API calls and reduce latency during peaks of API calls.
+
+**3. Deployment Process to Production:**
+
+The first step of deployment in AWS is the use of deployment automation tools, in our case it is GitLab CI/CD
+represented here with gitlab-ci.yml. It is important for managing the automatic sequence of build, test, and deployment.
+This file helps maintain a smooth development flow.
+
+During the build we must install all the necessary dependencies, compilation and packaging, for example with zip files
+in the case of lambda.
+
+For the testing phase in addition to unit tests we can also add integration tests to make sure that the different parts o
+f the system work well together. Furthermore, we can use code analysis tools such as (e.g. sonarque) which can be an
+integral part of continuous delivery.
+
+For configuration and deployment in various environments, we can use tools like Terraform to simplify the process
+and easily manage environment variables. By deploying, AWS SSM can help us manage these variables in centralized way.
+
+After deployment, it is essential to monitor the service. Tools like CloudWatch can give us a clear view of performance
+and alert us if there are problems. In those case some automatic measures can be taken, as an autoscaling of a resource or even
+some automatic deployments.
+
+We also need to plan a backup and recovery system to deal with emergency situations and ensure data security.
+Finally, keeping documentation up to date is crucial. This helps the team understand the project and manage it efficiently over time.
+
+
+**4.Monitoring**
+
+In my opinion, the most important metrics include:
+
+- the number of Lambda function invocations, which indicates the increase in traffic.
+- the real execution time of the Lambda function.
+- the total count of API Gateway requests.
+- the time taken by API Gateway to respond to requests.
+- 4xx and 5xx errors in API Gateway responses.
+- database CPU usage to ensure it is not overloaded.
+- free memory in the database, considering possible autoscaling.
+- cloudFront error rate to identify any content delivery issues.
+- cloudFront cache hit rate to evaluate cache effectiveness.
+
+These metrics can be effectively managed through a Lambda function that is subscribed to an SNS topic
+to send notifications via email or messages.
+
+
+**5.Security**
+
+Some best practices may include:
+
+- Implement a strong authentication system using standard protocols such as, for example, OAuth 2.0 with the use of tokens.
+- Use the HTTPS protocol to ensure secure communication between the client and the server.
+- Deploy resources from each environment to different AWS Regions
+- Carefully configure the security groups of resources, such as VPCs, to ensure adequate access control.
+- Apply throttling mechanisms to manage and control the number of requests coming from users.
+- Use monitoring tools, previously described, and implement automatic alarms, also with automatic deployment processes.
+- Adopt secure and strong hashing algorithms to ensure information integrity and security.
+- Keep the dependencies and libraries used in the system updated.
+- Implement effective solutions for data backup and recovery, ensuring the availability of information in the event of loss or damage.
